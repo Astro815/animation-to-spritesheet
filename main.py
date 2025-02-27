@@ -2,9 +2,9 @@ from PIL import Image
 import os
 import math
 
-# Especifications
+# Specifications
 
-print("Animations SpriteSheet - 1.3v\n")
+print("Animations to SpriteSheet - 1.0v\n")
 print("by Astro_815\n")
 
 name = input("Name: ")
@@ -18,7 +18,7 @@ inputSprites = list(map(lambda s: "./input/%s" % s, os.listdir("./input")))
 
 xmlContent = '<TextureAtlas imagePath="%s.png">\n' % name
 
-# Calculador de Total de Frames
+# Calculate Total Frames
 
 def countAllFrames():
     global totalFrame, sizeFrame, sizeFrame_height
@@ -34,7 +34,7 @@ def countAllFrames():
         sizeFrame = spt.size[0]
         sizeFrame_height = spt.size[1]
 
-print("Calculando o Total de Frames")
+print("Calculating Total Frames")
 
 countAllFrames()
 
@@ -42,7 +42,7 @@ countAllFrames()
 
 print(sizeFrame, sizeFrame_height)
 
-print("Criando Frame BASE")
+print("Creating BASE Frame")
 
 fb_width = sizeFrame * columns
 fb_height = math.ceil(totalFrame / columns) * sizeFrame_height
@@ -54,7 +54,7 @@ frameSeek = 0
 # Pasteing Frames to FrameBase - fb
 
 for sptLink in inputSprites:
-    print("Escaneando o sprite \"%s\"" % sptLink)
+    print("Scanning sprite \"%s\"" % sptLink)
     frames = []
     szAnim = -1
     if os.path.isdir(sptLink):
@@ -91,10 +91,12 @@ xmlContent += "</TextureAtlas>"
 
 # Saving
 
-print("Salvando")
+print("Saving...")
 
 xmlFile = open("./output/%s.xml" % name, "w")
 xmlFile.write(xmlContent)
 xmlFile.close()
 
 fb.save("./output/%s.png" % name)
+
+print("Saved!")
