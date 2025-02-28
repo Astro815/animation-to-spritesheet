@@ -3,16 +3,15 @@ import os
 import math
 
 # Specifications
-
 print("Animations to SpriteSheet - 1.0v\n")
 print("by Astro_815\n")
 
 name = input("Name: ")
 columns = 10
 
-sizeFrame = 0
-sizeFrame_height = 0
-totalFrame = 0
+frameWidth = 0
+frameHeight = 0
+frameCount = 0
 
 inputSprites = list(map(lambda s: "./input/%s" % s, os.listdir("./input")))
 
@@ -21,18 +20,18 @@ xmlContent = '<TextureAtlas imagePath="%s.png">\n' % name
 # Calculate Total Frames
 
 def countAllFrames():
-    global totalFrame, sizeFrame, sizeFrame_height
-    totalFrame = 0
+    global frameCount, frameWidth, frameHeight
+    frameCount = 0
     for sptLink in inputSprites:
         if os.path.isdir(sptLink):
             fdir = os.listdir(sptLink)
             spt = Image.open(sptLink + "/" + fdir[0])
-            totalFrame += len(fdir)
+            frameCount += len(fdir)
         else:
             spt = Image.open(sptLink)
-            totalFrame += spt.n_frames
-        sizeFrame = spt.size[0]
-        sizeFrame_height = spt.size[1]
+            frameCount += spt.n_frames
+        frameWidth = spt.size[0]
+        frameHeight = spt.size[1]
 
 print("Calculating Total Frames")
 
@@ -40,12 +39,12 @@ countAllFrames()
 
 # Creating a frame base
 
-print(sizeFrame, sizeFrame_height)
+print("Frame Dimensions: ", frameWidth, frameHeight)
 
 print("Creating BASE Frame")
 
-fb_width = sizeFrame * columns
-fb_height = math.ceil(totalFrame / columns) * sizeFrame_height
+fb_width = frameWidth * columns
+fb_height = math.ceil(frameCount / columns) * frameHeight
 
 fb = Image.new("RGBA", (fb_width, fb_height))
 
@@ -72,18 +71,17 @@ for sptLink in inputSprites:
             frames.append(minFrame)
     
     for frame in range(szAnim):
-        spx = (frameSeek - (math.floor(frameSeek / columns) * columns)) * sizeFrame
-        spy = math.floor(frameSeek / columns) * sizeFrame_height
+        spx = (frameSeek - (math.floor(frameSeek / columns) * columns)) * frameWidth
+        spy = math.floor(frameSeek / columns) * frameHeight
         
         spt = frames[frame]
-
         fb.paste(spt, (spx, spy))
 
         nameFile = sptLink.split("/")[len(sptLink.split("/")) - 1]
         nameFile = nameFile.split(".")[0]
 
         # Name - x - y - width - height
-        xmlContent += '<SubTexture name="%s %s%s" x="%s" y="%s" width="%s" height="%s"/>\n' % ( name , nameFile, str(frame).zfill(4) , spx , spy , sizeFrame , sizeFrame_height )
+        xmlContent += '<SubTexture name="%s %s%s" x="%s" y="%s" width="%s" height="%s"/>\n' % ( name , nameFile, str(frame).zfill(4) , spx , spy , frameWidth , frameHeight )
 
         frameSeek += 1
 
